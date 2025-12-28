@@ -23,37 +23,49 @@ gem 'kc'
 
 ## Usage
 
-### Save .env to Keychain
+### Save to Keychain
+
+Read from stdin and save to keychain:
 
 ```bash
-# In your project directory with .env file
-kc save myproject
+kc save 'myproject' < .env
+cat .env | kc save 'myproject'
+echo "API_KEY=secret" | kc save 'myproject'
 ```
 
-This saves the entire `.env` file content to macOS Keychain under service name `kc` with account name `myproject`.
+### Load from Keychain
 
-### Load .env from Keychain
+Output to stdout or redirect to file:
 
 ```bash
-kc load myproject
+kc load 'myproject'
+kc load 'myproject' > .env
 ```
 
-This outputs the stored `.env` content to stdout.
+### Delete from Keychain
+
+```bash
+kc delete 'myproject'
+```
 
 ### Use with direnv
 
 In your `.envrc`:
 
 ```bash
-# Load .env from keychain and source it
+# Load from keychain and export all variables
 eval "$(kc load myproject | sed 's/^/export /')"
-```
 
-Or simply dump it to a file:
-
-```bash
+# Or restore .env file
 kc load myproject > .env
+source_env .env
 ```
+
+## Commands
+
+- `kc save <name>` - Read from stdin and save to keychain
+- `kc load <name>` - Load from keychain and output to stdout  
+- `kc delete <name>` - Delete entry from keychain
 
 ## How it works
 
@@ -61,6 +73,26 @@ kc load myproject > .env
 
 - Service name: `kc`
 - Account name: `<your-project-name>`
+
+## Examples
+
+```bash
+# Save your .env
+kc save 'myapp' < .env
+
+# Load it back
+kc load 'myapp' > .env
+
+# Use in a script
+if kc load 'myapp' > /dev/null 2>&1; then
+  kc load 'myapp' > .env
+else
+  echo "No saved env found"
+fi
+
+# Delete when done
+kc delete 'myapp'
+```
 
 ## Development
 

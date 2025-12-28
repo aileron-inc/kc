@@ -123,8 +123,14 @@ module Kc
           item_ref
         )
 
-        if status.zero?
-          SecurityFramework.SecKeychainItemDelete(item_ref.read_pointer)
+        unless status.zero?
+          raise Error, "Entry '#{account_name}' not found in keychain"
+        end
+
+        delete_status = SecurityFramework.SecKeychainItemDelete(item_ref.read_pointer)
+        
+        unless delete_status.zero?
+          raise Error, "Failed to delete from keychain (status: #{delete_status})"
         end
       end
     end
