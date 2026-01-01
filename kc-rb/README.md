@@ -1,13 +1,12 @@
-# kc - Keychain Manager for direnv
+# kc - Keychain Manager
 
-A CLI tool to securely store and retrieve secrets from macOS Keychain with namespace support, designed to work seamlessly with direnv.
+A CLI tool to securely store and retrieve secrets from macOS Keychain with namespace support.
 
 ## Features
 
 - 🔐 Securely store any secrets in macOS Keychain
 - 🏷️ **Namespace support** - organize secrets by type (env, ssh, token, etc.)
 - 🚀 Native implementation using FFI (no shell command overhead)
-- 🎯 Designed for direnv integration
 - 📦 Simple CLI interface
 - 📋 List and filter secrets by namespace
 
@@ -186,7 +185,7 @@ bundle exec rspec
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/aileron-inc/kc.
+Bug reports and pull requests are welcome on GitHub at https://github.com/aileron-inc/tools.
 
 ## License
 
@@ -194,4 +193,4 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Code of Conduct
 
-Everyone interacting in the Kc project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/aileron-inc/kc/blob/master/CODE_OF_CONDUCT.md).
+Everyone interacting in the Kc project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/aileron-inc/tools/blob/main/CODE_OF_CONDUCT.md).

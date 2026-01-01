@@ -1,49 +1,43 @@
-# kc - Keychain Manager
+# Tools
 
-A secure CLI tool to manage secrets in macOS Keychain with namespace support.
+A collection of small, focused CLI tools for development workflows.
 
-## Implementations
+## Tools
 
-- **[kc-rb](./kc-rb/)** - Ruby implementation (FFI-based, production ready)
-- **kc-rs** - Rust implementation (planned)
-
-## Features
-
-- 🔐 Securely store any secrets in macOS Keychain
-- 🏷️ **Namespace support** - organize secrets by type (env, ssh, token, etc.)
-- 🚀 Native implementation using FFI (no shell command overhead)
-- 🎯 Designed for direnv integration
-- 📦 Simple CLI interface
-- 📋 List and filter secrets by namespace
-
-## Quick Start
+### [kc](./kc-rb/) - Keychain Manager
+Securely manage secrets in macOS Keychain with namespace support.
 
 ```bash
-# Install Ruby version
 gem install kc
-
-# Save secrets with namespace
 kc save env:myproject < .env
-kc save ssh:id_rsa < ~/.ssh/id_rsa
-echo "token123" | kc save token:github
-
-# Load secrets
 kc load env:myproject > .env
-kc load ssh:id_rsa > ~/.ssh/id_rsa
-
-# List secrets
-kc list              # All secrets
-kc list env:         # Only env: namespace
-
-# Delete secrets
-kc delete env:myproject
 ```
+
+### [gw](./gw-rb/) - Git Worktree Manager
+Manage git worktrees with bare repository pattern (core/ and tree/ structure).
+
+```bash
+gem install gw
+gw clone owner/repo
+gw add owner/repo feature-branch
+gw list
+```
+
+## Philosophy
+
+Each tool follows these principles:
+
+- **Small and focused** - Does one thing well
+- **Simple CLI interface** - Easy to use and remember
+- **Minimal dependencies** - Fast installation and execution
+- **Consistent patterns** - Similar structure across all tools
 
 ## Documentation
 
-See individual implementation directories for detailed documentation:
-- [Ruby implementation](./kc-rb/README.md)
+See individual tool directories for detailed documentation:
+- [kc](./kc-rb/README.md) - Keychain Manager
+- [gw](./gw-rb/README.md) - Git Worktree Manager
 
 ## License
 
-MIT License - see individual implementations for details.
+MIT License - see individual tools for details.
