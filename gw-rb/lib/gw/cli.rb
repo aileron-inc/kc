@@ -142,15 +142,30 @@ module Gw
         return
       end
 
-      puts "REPOSITORY  BRANCH      PATH"
+      # Collect all worktrees with repo/branch format
+      all_worktrees = []
       repos.each do |repo|
         worktrees = repo.worktrees
         if worktrees.empty?
-          puts "#{repo.name.ljust(12)}(no worktrees)"
+          all_worktrees << { repo: repo.name, branch: "(no worktrees)", path: "" }
         else
           worktrees.each do |wt|
-            puts "#{repo.name.ljust(12)}#{wt.branch.ljust(12)}#{wt.path}"
+            all_worktrees << { repo: repo.name, branch: wt.branch, path: wt.path }
           end
+        end
+      end
+
+      # Calculate column widths
+      max_combined = all_worktrees.map { |wt| "#{wt[:repo]}/#{wt[:branch]}".length }.max || 0
+      combined_width = [max_combined + 2, 30].max
+
+      puts "#{"WORKTREE".ljust(combined_width)}PATH"
+      all_worktrees.each do |wt|
+        if wt[:branch] == "(no worktrees)"
+          puts "#{wt[:repo].ljust(combined_width)}#{wt[:branch]}"
+        else
+          combined = "#{wt[:repo]}/#{wt[:branch]}"
+          puts "#{combined.ljust(combined_width)}#{wt[:path]}"
         end
       end
     end
@@ -217,15 +232,15 @@ module Gw
     def show_usage
       puts <<~USAGE
         Usage:
-          gw init                              Initialize gw workspace
-          gw repo clone <owner/repo>           Clone repository
+          gw init                                    Initialize gw workspace
+          gw repo clone <owner/repo>                 Clone repository
           gw repo clone <owner/repo> --name <name>   Clone with custom name
-          gw add <repo>/<branch>               Add worktree
-          gw remove <repo>/<branch>            Remove worktree
-          gw list [repo]                       List worktrees
-          gw go <repo>/<branch>                Print worktree path (for cd)
-          gw config get <key>                  Get config value
-          gw config set <key> <value>          Set config value
+          gw add <repo>/<branch>                     Add worktree
+          gw remove <repo>/<branch>                  Remove worktree
+          gw list [repo]                             List worktrees
+          gw go <repo>/<branch>                      Print worktree path
+          gw config get <key>                        Get config value
+          gw config set <key> <value>                Set config value
 
         Examples:
           gw init
