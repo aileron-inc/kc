@@ -1,10 +1,11 @@
 # kc - Keychain Manager
 
-A CLI tool to securely store and retrieve secrets from macOS Keychain with namespace support.
+A CLI tool to securely store and retrieve secrets from macOS Keychain with namespace support and automatic iCloud sync.
 
 ## Features
 
 - 🔐 Securely store any secrets in macOS Keychain
+- ☁️ **iCloud Keychain sync** - automatically sync secrets across all your Macs
 - 🏷️ **Namespace support** - organize secrets by type (env, ssh, token, etc.)
 - 🚀 Native implementation using FFI (no shell command overhead)
 - 📦 Simple CLI interface
@@ -116,10 +117,24 @@ You can create custom namespaces as needed.
 
 ## How it works
 
-`kc` uses macOS Security framework via FFI to directly interact with the Keychain, avoiding shell command overhead. All entries are stored under:
+`kc` uses macOS Security framework via FFI to directly interact with the Keychain, avoiding shell command overhead. All entries are stored as **Internet Passwords** with:
 
-- Service name: `kc`
-- Account name: `<namespace>:<name>` (e.g., `env:myproject`)
+- Server: `kc`
+- Account: `<namespace>:<name>` (e.g., `env:myproject`)
+- Protocol: HTTPS
+
+### iCloud Keychain Sync
+
+All secrets saved by `kc` are automatically synchronized across your Macs via **iCloud Keychain** (if enabled in System Settings). This means:
+
+- 💾 Save a secret on one Mac → Access it instantly on all your other Macs
+- 🔄 Changes and deletions are synced automatically
+- 🔐 End-to-end encryption ensures your secrets remain secure during sync
+- 🌐 No manual export/import needed
+
+To verify sync is working, open **Keychain Access.app** and select the **iCloud** keychain. Look for entries with server name `kc`.
+
+**Note:** Internet Passwords (used by `kc`) are automatically synced by macOS when iCloud Keychain is enabled. You don't need to do anything special!
 
 ## Full Workflow Example
 
