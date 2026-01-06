@@ -16,6 +16,9 @@ module Gw
 
       raise WorktreeAlreadyExistsError, "Worktree '#{branch}' already exists" if worktree.exist?
 
+      # Fetch latest changes from remote
+      repo.fetch
+
       # Check if branch exists (locally or remotely)
       branch_exists = system("git -C #{repo.bare_path} show-ref --verify --quiet refs/heads/#{branch}") ||
                       system("git -C #{repo.bare_path} show-ref --verify --quiet refs/remotes/origin/#{branch}")

@@ -75,5 +75,13 @@ module Gw
 
       @default_branch
     end
+
+    def fetch
+      puts "Fetching latest changes from remote..."
+      success = system("git -C #{bare_path} fetch --all --prune")
+      raise Error, "Failed to fetch from remote" unless success
+
+      true
+    end
   end
 end
