@@ -40,6 +40,49 @@ module Gw
         repo = repository(full_name)
         repo.default_branch
       end
+
+      # Find PR by branch name
+      # Returns { number:, state:, title:, url: } or nil
+      def find_pr_by_branch(full_name, branch)
+        prs = client.pull_requests(full_name, state: "all", head: "#{full_name.split("/").first}:#{branch}")
+        return nil if prs.empty?
+
+        pr = prs.first
+        {
+          number: pr.number,
+          state: pr.state.upcase,
+          merged: pr.merged_at ? true : false,
+          title: pr.title,
+          url: pr.html_url
+        }
+      rescue Octokit::Error
+        nil
+      end
+
+      # Batch fetch PRs for multiple branches (more efficient)
+      def find_prs_by_branches(full_name, branches)
+        result = {}
+
+        # Fetch all open and closed PRs
+        %w[open closed].each do |state|
+          prs = client.pull_requests(full_name, state: state, per_page: 100)
+          prs.each do |pr|
+            branch = pr.head.ref
+            next unless branches.include?(branch)
+
+            result[branch] = {
+              number: pr.number,
+              state: pr.merged_at ? "MERGED" : pr.state.upcase,
+              title: pr.title,
+              url: pr.html_url
+            }
+          end
+        end
+
+        result
+      rescue Octokit::Error
+        {}
+      end
     end
   end
 end

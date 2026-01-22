@@ -4,12 +4,27 @@ require "fileutils"
 
 module Gw
   class Repository
-    attr_reader :name, :full_name, :bare_path
+    attr_reader :name, :bare_path
 
     def initialize(name, full_name = nil)
       @name = name
-      @full_name = full_name
+      @_full_name = full_name
       @bare_path = File.join(Config.core_dir, name)
+    end
+
+    # Get full_name (owner/repo) from remote URL
+    def full_name
+      return @_full_name if @_full_name
+
+      @_full_name ||= begin
+        remote_url = `git -C #{bare_path} remote get-url origin 2>/dev/null`.strip
+        return nil if remote_url.empty?
+
+        # Parse GitHub URL: https://github.com/owner/repo.git or git@github.com:owner/repo.git
+        if remote_url =~ %r{github\.com[/:]([^/]+)/([^/]+?)(?:\.git)?$}
+          "#{::Regexp.last_match(1)}/#{::Regexp.last_match(2)}"
+        end
+      end
     end
 
     def self.clone(full_name, custom_name: nil)
