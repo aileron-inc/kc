@@ -11,6 +11,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     name: Ruby ${{ matrix.ruby }}
+    defaults:
+      run:
+        working-directory: ./gw-rb
     strategy:
       matrix:
         ruby:
@@ -34,6 +37,9 @@ jobs:
     needs: build
     permissions:
       contents: write
+    defaults:
+      run:
+        working-directory: ./gw-rb
 
     steps:
       - uses: actions/checkout@v4
