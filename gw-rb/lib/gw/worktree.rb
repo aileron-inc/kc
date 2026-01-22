@@ -56,9 +56,21 @@ module Gw
     def self.list(repository)
       return [] unless Dir.exist?(repository.tree_dir)
 
-      Dir.children(repository.tree_dir).map do |branch|
-        new(repository, branch)
-      end.select(&:exist?)
+      # Use git worktree list to get actual branch names
+      output = `git -C #{repository.bare_path} worktree list --porcelain`
+      return [] if output.empty?
+
+      output.scan(/worktree (.+)/).map do |paths|
+        path = paths[0]
+        # Only include worktrees in this repo's tree_dir
+        next unless path.start_with?(repository.tree_dir)
+
+        # Get branch from git command
+        branch = `git -C #{path} branch --show-current 2>/dev/null`.strip
+        next if branch.empty?
+
+        new(repository, branch, path)
+      end.compact
     end
 
     def exist?
